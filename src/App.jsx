@@ -6,10 +6,10 @@ import Tabs from "./components/Tabs"
 
 function App() {
   return (
-    <div className="bg-gray-950 w-full h-screen text-white">
+    <div className="bg-white w-full min-h-screen text-white">
       <SearchBar />
       <Tabs />
-      <ResultGride/>
+      <ResultGride />
     </div>
   )
 }

@@ -30,41 +30,62 @@ function ResultGride() {
                         src: item.urls.full,
                     }));
                 }
-                if (activeTab == "videos") {
-                    let response = await fetchVideos(query);
-                    data = response.videos.map((item) => ({
-                        id: item.id,
-                        type: "videos",
-                        title: item.user.name || "video",
-                        thumbnail: item.image,
-                        src: item.video_files[2].link,
-                    }));
+                if (activeTab === "videos") {
+                    const response = await fetchVideos(query);
+
+                    data = response.videos.map((item) => {
+                        const videoFile = item.video_files
+                            .filter(
+                                (file) =>
+                                    file.file_type === "video/mp4" &&
+                                    file.link
+                            )
+                            .sort((a, b) => b.width - a.width)[0];
+
+                        return {
+                            id: item.id,
+                            type: "video",
+                            title: item.user?.name || "Video",
+                            thumbnail: item.image,
+                            src: videoFile?.link || "",
+                            width: videoFile?.width,
+                            height: videoFile?.height,
+                        };
+                    }).filter((item) => item.src);
                 }
-                if (activeTab == "gif") {
-                    let response = await fetchGIF(query);
+                if (activeTab === "gif") {
+                    const response = await fetchGIF(query);
+
                     data = response.data.map((item) => ({
                         id: item.id,
                         type: "gif",
                         title: item.title || "GIF",
-                        thumbnail: item?.user?.avatar_url || item.images?.fixed_width?.url,
-                        src: item.embed_url,
-                    }));
+                        thumbnail:
+                            item.images?.fixed_width_small?.url ||
+                            item.images?.fixed_width?.url,
+                        src:
+                            item.images?.fixed_width?.url ||
+                            item.images?.original?.url ||
+                            "",
+                    })).filter((item) => item.src);
                 }
+                console.log(data);
                 dispatch(setResults(data));
             } catch (err) {
                 dispatch(setError(err.message));
             }
         };
         getData();
+
     }, [query, activeTab]);
 
     if (error) return <h1>Error</h1>;
     if (loading) return <h1>Loading...</h1>;
     return (
-        <div>
+        <div className="columns-2 sm:columns-3 lg:columns-4 xl:columns-5 gap-4 px-6">
             {results.map((item, idx) => {
-                return <div key={idx}>
-                    <ResultCard />
+                return <div key={idx} className="mb-4 break-inside-avoid">
+                    <ResultCard item={item} />
                 </div>;
             })}
         </div>
