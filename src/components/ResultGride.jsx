@@ -22,12 +22,16 @@ function ResultGride() {
                 let data = [];
                 if (activeTab == "photos") {
                     let response = await fetchPhotos(query);
+                    console.log(response.results);
+
                     data = response.results.map((item) => ({
                         id: item.id,
                         type: "photo",
                         title: item.alt_description,
                         thumbnail: item.urls.small,
                         src: item.urls.full,
+                        url: item.links.download,
+                        dow: item.links.download_location,
                     }));
                 }
                 if (activeTab === "videos") {
@@ -41,7 +45,6 @@ function ResultGride() {
                                     file.link
                             )
                             .sort((a, b) => b.width - a.width)[0];
-
                         return {
                             id: item.id,
                             type: "video",
@@ -50,12 +53,14 @@ function ResultGride() {
                             src: videoFile?.link || "",
                             width: videoFile?.width,
                             height: videoFile?.height,
+                            url: item.video_files[0].link,
+                            dow: videoFile?.link || "",
                         };
                     }).filter((item) => item.src);
                 }
                 if (activeTab === "gif") {
                     const response = await fetchGIF(query);
-
+                    console.log(response.data);
                     data = response.data.map((item) => ({
                         id: item.id,
                         type: "gif",
@@ -67,6 +72,11 @@ function ResultGride() {
                             item.images?.fixed_width?.url ||
                             item.images?.original?.url ||
                             "",
+                        url: item.embed_url,
+                        dow:
+                            item.images?.original?.url ||
+                            item.images?.fixed_width?.url ||
+                            "",
                     })).filter((item) => item.src);
                 }
                 console.log(data);
@@ -77,7 +87,8 @@ function ResultGride() {
         };
         getData();
 
-    }, [query, activeTab]);
+
+    }, [query, activeTab, dispatch]);
 
     if (error) return <h1>Error</h1>;
     if (loading) return <h1>Loading...</h1>;
