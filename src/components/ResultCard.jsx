@@ -7,7 +7,6 @@ const ResultCard = ({ item }) => {
     setDownloadStatus("Preparing your download...");
 
     try {
-      // Unsplash download tracking (don't block the file download)
       if (item.type === "photo" && item.dow) {
         fetch(item.dow, {
           headers: {
