@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setQuery } from "../redux/Features/searchSlice";
+import { Link } from "react-router-dom";
 
 const SearchBar = () => {
   const [text, setText] = useState("");
@@ -11,7 +12,7 @@ const SearchBar = () => {
     setText("");
   };
   return (
-    <div>
+    <div className="flex justify-between items-center">
       <form
         onSubmit={submitHandler}
         className="flex bg-white gap-5 py-10 px-10 "
@@ -30,6 +31,20 @@ const SearchBar = () => {
           Search
         </button>
       </form>
+      <div className="flex text-xl items-center gap-5">
+        <Link
+          className="text-lg rounded px-4 text-black bg-amber-700 py-3"
+          to="/"
+        >
+          Search
+        </Link>
+        <Link
+          className="text-lg rounded px-4 text-black bg-amber-700 py-3"
+          to="/collection"
+        >
+          Collection
+        </Link>
+      </div>
     </div>
   );
 };
