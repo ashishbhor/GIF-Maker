@@ -1,15 +1,14 @@
-import ResultGride from "./components/ResultGride";
-import SearchBar from "./components/SearchBar";
-import Tabs from "./components/Tabs";
-import TopText from "./components/TopText";
+import { Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import ColleactionPage from "./pages/ColleactionPage";
 
 function App() {
   return (
     <div className="bg-white w-full min-h-screen text-white">
-      <TopText />
-      <SearchBar />
-      <Tabs />
-      <ResultGride />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/collection" element={<ColleactionPage />} />
+      </Routes>
     </div>
   );
 }

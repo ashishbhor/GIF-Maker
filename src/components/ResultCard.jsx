@@ -1,8 +1,49 @@
 import DownloadIcon from "./ui/download-icon";
+
+import BookmarkIcon from "./ui/bookmark-icon";
+
 import { useState } from "react";
 
 const ResultCard = ({ item }) => {
   const [downloadStatus, setDownloadStatus] = useState("");
+
+  const getBookmarks = () => {
+    try {
+      return JSON.parse(localStorage.getItem("gif-maker-bookmarks") || "[]");
+    } catch {
+      return [];
+    }
+  };
+
+  const [isBookmarked, setIsBookmarked] = useState(() =>
+    getBookmarks().some(
+      (savedItem) => savedItem.id === item.id && savedItem.type === item.type,
+    ),
+  );
+
+  const handleBookmark = (item) => {
+    const bookmarks = getBookmarks();
+
+    const alreadySaved = bookmarks.some(
+      (savedItem) => savedItem.id === item.id && savedItem.type === item.type,
+    );
+
+    const updatedBookmarks = alreadySaved
+      ? bookmarks.filter(
+          (savedItem) =>
+            !(savedItem.id === item.id && savedItem.type === item.type),
+        )
+      : [...bookmarks, item];
+
+    localStorage.setItem(
+      "gif-maker-bookmarks",
+      JSON.stringify(updatedBookmarks),
+    );
+
+    setIsBookmarked(!alreadySaved);
+  };
+
+  //Handel Dowload
   const handleDownload = async (item) => {
     setDownloadStatus("Preparing your download...");
 
@@ -88,20 +129,31 @@ const ResultCard = ({ item }) => {
           )}
         </a>
         {(item.type === "photo" || item.type === "gif") && (
-          <button
-            type="button"
-            aria-label="Download media"
-            onClick={() => handleDownload(item)}
-            className="absolute bottom-3 left-3 z-10
-                    flex h-10 w-10 items-center justify-center
-                    rounded-full bg-black/60 text-white
-                    opacity-0 transition-all duration-300
-                    hover:bg-green-500
-                    group-hover:translate-y-0
-                    group-hover:opacity-100"
-          >
-            <DownloadIcon className="h-6 w-6" />
-          </button>
+          <>
+            <button
+              type="button"
+              aria-label="Download media"
+              onClick={() => handleDownload(item)}
+              className="absolute bottom-3 left-3 z-10 flex h-9.5 w-9
+                        items-center justify-center rounded-full bg-black/60 text-white
+                        opacity-0 transition-all duration-300 hover:bg-green-500
+                        group-hover:opacity-100 active:scale-95"
+            >
+              <DownloadIcon className="h-6 w-6" />
+            </button>
+            <button
+              type="button"
+              aria-label={isBookmarked ? "Remove bookmark" : "Bookmark media"}
+              onClick={() => handleBookmark(item)}
+              className={`absolute bottom-3 right-3 z-10 flex h-10 w-10
+                            items-center justify-center rounded-full text-white
+                            transition-all duration-300 hover:bg-blue-700
+                            group-hover:opacity-100 active:scale-95
+                            ${isBookmarked ? "bg-blue-500 opacity-100" : "bg-black/60 opacity-0"}`}
+            >
+              <BookmarkIcon className="h-6 w-6" />
+            </button>
+          </>
         )}
       </div>
       {downloadStatus && (

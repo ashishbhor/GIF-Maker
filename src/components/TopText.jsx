@@ -4,7 +4,7 @@ const TopText = () => {
   return (
     <div className="w-full h-32 flex justify-center items-center px-4">
       <TechText
-        text="GIF MAKER"
+        text="Screen Art"
         fontSize={100}
         color="#111827"
         accentColor="#16a34a"

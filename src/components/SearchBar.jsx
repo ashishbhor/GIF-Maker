@@ -1,35 +1,37 @@
-import { useState } from "react"
-import { useDispatch } from "react-redux"
-import { setQuery } from "../redux/Features/searchSlice"
-
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setQuery } from "../redux/Features/searchSlice";
 
 const SearchBar = () => {
-
-  const [text, setText] = useState('')
-  const dispath = useDispatch()
+  const [text, setText] = useState("");
+  const dispath = useDispatch();
   const submitHandler = (e) => {
-    e.preventDefault()
-    dispath(setQuery(text))
-    setText('')
-  }
+    e.preventDefault();
+    dispath(setQuery(text));
+    setText("");
+  };
   return (
     <div>
       <form
         onSubmit={submitHandler}
-        className="flex bg-gray-700 gap-5 py-10 px-10 ">
+        className="flex bg-white gap-5 py-10 px-10 "
+      >
         <input
           required
           value={text}
           onChange={(e) => {
-            setText(e.target.value)
+            setText(e.target.value);
           }}
-          className="w-full border-2 px-6 py-3 text-xl rounded outline-none"
+          className="w-1/2 border-2 px-6 py-3 text-xl rounded outline-none text-black border-black"
           type="text"
-          placeholder='search' />
-          <button  className="border-2 px-6 py-3 text-xl rounded active:scale-90">Search</button>
-        </form>
+          placeholder="search"
+        />
+        <button className="border-2 px-6 py-3 text-xl rounded active:scale-90 text-black border-black">
+          Search
+        </button>
+      </form>
     </div>
-  )
-}
+  );
+};
 
-export default SearchBar
+export default SearchBar;
