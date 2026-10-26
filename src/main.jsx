@@ -5,12 +5,15 @@ import App from "./App.jsx";
 import { store } from "./redux/store.js";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
+import { BookmarkProvider } from "./context/BookmarkContext";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <App />
+        <BookmarkProvider>
+          <App />
+        </BookmarkProvider>
       </BrowserRouter>
     </Provider>
   </StrictMode>,
