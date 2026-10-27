@@ -1,8 +1,8 @@
-import { useBookmarks } from "../context/useBookmarks";
+import { useSelector } from "react-redux";
 import ResultCard from "../components/ResultCard";
 
 const CollectionPage = () => {
-  const { bookmarks } = useBookmarks();
+  const bookmarks = useSelector((state) => state.collection.bookmarks);
 
   return (
     <div className="min-h-screen bg-white px-6 py-6">
