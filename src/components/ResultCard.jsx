@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DownloadIcon from "./ui/download-icon";
 import BookmarkIcon from "./ui/bookmark-icon";
+import { toast } from "react-toastify";
 
 import { toggleBookmark } from "../redux/Features/collectionSlice";
 
@@ -15,6 +16,22 @@ const ResultCard = ({ item }) => {
   );
 
   const [downloadStatus, setDownloadStatus] = useState("");
+
+  const handleBookmarkClick = () => {
+    if (bookmarked) {
+      dispatch(toggleBookmark(item));
+
+      toast.info(
+        `${item.type === "gif" ? "GIF" : "Photo"} removed from your collection!`,
+      );
+    } else {
+      dispatch(toggleBookmark(item));
+
+      toast.success(
+        `${item.type === "gif" ? "GIF" : "Photo"} added to your collection!`,
+      );
+    }
+  };
 
   // Handle Download
   const handleDownload = async (item) => {
@@ -119,7 +136,7 @@ const ResultCard = ({ item }) => {
               type="button"
               aria-label={bookmarked ? "Remove bookmark" : "Bookmark media"}
               aria-pressed={bookmarked}
-              onClick={() => dispatch(toggleBookmark(item))}
+              onClick={handleBookmarkClick}
               className={`absolute bottom-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full text-white transition-all duration-300 hover:bg-blue-700 group-hover:opacity-100 active:scale-95 ${
                 bookmarked ? "bg-blue-500 opacity-100" : "bg-black/60 opacity-0"
               }`}
