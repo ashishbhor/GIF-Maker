@@ -82,13 +82,6 @@ const ResultCard = ({ item }) => {
   };
   return (
     <div className="group w-full overflow-hidden rounded-lg bg-gray-900 shadow-sm transition hover:shadow-lg">
-      {/* Media Title */}
-      <div className="px-2 py-1.5">
-        <h3 className="truncate text-xs font-medium text-white">
-          {item.title || "Untitled"}
-        </h3>
-      </div>
-
       {/* Media Preview */}
       <div className="relative overflow-hidden">
         <a href={item.url} target="_blank" rel="noreferrer" className="block">
@@ -145,6 +138,12 @@ const ResultCard = ({ item }) => {
             </button>
           </>
         )}
+      </div>
+      {/* Media Title */}
+      <div className="px-2 py-1.5">
+        <h3 className="truncate text-xs font-medium text-white">
+          {item.title || "Untitled"}
+        </h3>
       </div>
       {downloadStatus && (
         <div

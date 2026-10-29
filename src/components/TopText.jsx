@@ -1,7 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-
 import TechText from "./TechText";
-import CodeXmlIcon from "./ui/code-xml-icon";
 
 const TopText = () => {
   const location = useLocation();
@@ -9,48 +7,45 @@ const TopText = () => {
   const navLinkClass = (path) => {
     const isActive = location.pathname === path;
 
-    return `inline-flex shrink-0 items-center justify-center rounded-lg px-3 py-2
-      text-sm font-semibold transition-colors duration-200
-      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F3E9D2]
-      active:scale-95 ${
-        isActive
-          ? "bg-[#F3E9D2] text-[#164E43]"
-          : "bg-white/10 text-white hover:bg-white/20"
-      }`;
+    return [
+      "inline-flex shrink-0 items-center justify-center",
+      "rounded-full px-4 py-2",
+      "text-xs sm:text-sm font-medium whitespace-nowrap",
+      "transition-all duration-200",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30",
+      isActive
+        ? "bg-white/15 text-white shadow-inner"
+        : "bg-transparent text-white/65 hover:bg-white/10 hover:text-white",
+    ].join(" ");
   };
 
   return (
-    <header className="w-full bg-[#164E43] text-white shadow-md">
-      <div className="grid h-23 w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6 lg:px-8">
-        {/* Left: Code icon */}
+    <header className="relative z-20 w-full  text-white bg-cyan-950">
+      <div className="mx-auto flex h-18 w-full items-center justify-between gap-3 px-8 sm:px-8 lg:px-12">
+        {/* Left: Animated Visual Wall title */}
         <Link
           to="/"
-          aria-label="Screen Art home"
-          className="flex items-center justify-center rounded-lg p-1 text-[#DAF1ED] transition-colors hover:bg-white/10"
+          aria-label="Visual Wall home"
+          className="flex shrink-0 items-center"
         >
-          <CodeXmlIcon className="h-8 w-8 sm:h-9 sm:w-12" />
-        </Link>
-
-        {/* Center: Animated title */}
-        <div className="flex h-full min-w-0 items-center justify-center overflow-hidden">
           <TechText
-            text="Screen Art"
-            fontSize={100}
-            color="#DAF1ED"
-            accentColor="#DAF1ED"
+            text="Visual Wall"
+            fontSize={34}
+            color="#FFFFFF"
+            accentColor="#FFFFFF"
             sweep={true}
             labels={false}
             selection={false}
             draggable={false}
             clickKick={false}
-            className="h-12 w-full max-w-130 bg-transparent"
+            className="h-10 w-36.25 bg-transparent sm:w-41.25"
           />
-        </div>
+        </Link>
 
-        {/* Right: Navigation */}
+        {/* Right: Compact navigation */}
         <nav
           aria-label="Main navigation"
-          className="flex items-center justify-end gap-2"
+          className="flex items-center gap-1 rounded-full border border-white/10 bg-white/4 p-1"
         >
           <Link to="/" className={navLinkClass("/")}>
             Search

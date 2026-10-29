@@ -89,7 +89,7 @@ function ResultGride() {
   if (error) return <h1>Error</h1>;
   if (loading) return <h1>Loading...</h1>;
   return (
-    <div className="columns-2 sm:columns-3 lg:columns-4 xl:columns-5 gap-4 px-6">
+    <div className="columns-2 sm:columns-3 lg:columns-4 xl:columns-5 gap-4 px-6 bg-gray-900">
       {results.map((item, idx) => {
         return (
           <div key={idx} className="mb-4 break-inside-avoid">
