@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import ResultCard from "../components/ResultCard";
 import { Link } from "react-router-dom";
+import Footer from "@/components/Footer";
 
 const CollectionPage = () => {
   const bookmarks = useSelector((state) => state.collection.bookmarks);
@@ -34,6 +35,7 @@ const CollectionPage = () => {
           ))}
         </div>
       )}
+      <Footer />
     </div>
   );
 };
