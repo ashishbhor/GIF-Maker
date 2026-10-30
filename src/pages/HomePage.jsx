@@ -16,7 +16,6 @@ const HomePage = () => {
         className="relative min-h-[calc(100vh-72px)]
       overflow-hidden bg-gray-900 text-white"
       >
-        {/* Lightfall background: introduction only */}
         {isIntroduction && (
           <div
             className="pointer-events-none absolute inset-0 z-0"
@@ -33,16 +32,13 @@ const HomePage = () => {
           </div>
         )}
 
-        {/* Content stays above the background */}
         <div className="relative z-10">
-          {/* Search bar remains visible in both states */}
           <div className={`px-4 ${isIntroduction ? "pt-8 sm:pt-12" : "pt-6"}`}>
             <SearchBar />
           </div>
 
           {isIntroduction ? (
             <>
-              {/* Introduction */}
               <div
                 className="flex min-h-[65vh] items-center
               justify-center py-12 sm:py-16"
@@ -52,7 +48,6 @@ const HomePage = () => {
               <Footer />
             </>
           ) : (
-            /* Search results only after a query is submitted */
             <section className="pt-5">
               <Tabs />
               <ResultGride />
