@@ -31,6 +31,9 @@ const SearchBar = () => {
         type="text"
         required
         value={text}
+        autoComplete="off"
+        autoCorrect="off"
+        spellCheck={false}
         onChange={(e) => setText(e.target.value)}
         placeholder="Search photos, videos, GIFs..."
         aria-label="Search photos, videos, and GIFs"
