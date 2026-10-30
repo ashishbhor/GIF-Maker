@@ -1,8 +1,15 @@
 import { Link, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setQuery } from "../redux/Features/searchSlice";
 import TechText from "./TechText";
 
 const TopText = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
+
+  const handleHomeClick = () => {
+    dispatch(setQuery(""));
+  };
 
   const navLinkClass = (path) => {
     const isActive = location.pathname === path;
@@ -20,11 +27,11 @@ const TopText = () => {
   };
 
   return (
-    <header className="relative z-20 w-full  text-white bg-cyan-950">
-      <div className="mx-auto flex h-18 w-full items-center justify-between gap-3 px-8 sm:px-8 lg:px-12">
-        {/* Left: Animated Visual Wall title */}
+    <header className="relative z-20 w-full bg-gray-900 text-white ">
+      <div className="mx-auto flex h-18 w-full items-center justify-between gap-3 px-4 sm:px-8 lg:px-12">
         <Link
           to="/"
+          onClick={handleHomeClick}
           aria-label="Visual Wall home"
           className="flex shrink-0 items-center"
         >
@@ -42,7 +49,6 @@ const TopText = () => {
           />
         </Link>
 
-        {/* Right: Compact navigation */}
         <nav
           aria-label="Main navigation"
           className="flex items-center gap-1 rounded-full border border-white/10 bg-white/4 p-1"
@@ -50,7 +56,6 @@ const TopText = () => {
           <Link to="/" className={navLinkClass("/")}>
             Search
           </Link>
-
           <Link to="/collection" className={navLinkClass("/collection")}>
             Collection
           </Link>
