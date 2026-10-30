@@ -26,7 +26,7 @@ const HomePage = () => {
             headGlow={0.75}
             mouseRadius={0.5}
             bloom={0.3}
-            backgroundGlow={0.12}
+            backgroundGlow={0}
           />
         </div>
       )}
@@ -51,11 +51,11 @@ const HomePage = () => {
             {/* Introduction footer only */}
             <footer
               className="flex flex-col items-center
-              justify-center gap-3 border-t border-white/8
+              justify-center gap-3  border-white/8
               px-4 py-6 text-xs text-white/45
               sm:flex-row sm:gap-5"
             >
-              <span>© 2026 BhorBox. All rights reserved.</span>
+              <span>© 2026 bhorBox. All rights reserved.</span>
 
               <nav
                 aria-label="Footer navigation"
