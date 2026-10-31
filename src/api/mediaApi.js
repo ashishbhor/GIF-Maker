@@ -14,6 +14,39 @@ export async function fetchPhotos (query,page=1,per_page=20)  {
     return res.data;
 }
 
+export async function fetchWallhavenPhotos(query,page=1) {
+    const res = await axios.get('https://wallhaven.cc/api/v1/search', {
+        params: {  q: query,page,purity: "100"},
+    })
+    return res.data;
+}
+
+export function normalizeUnsplashPhoto(item) {
+  return {
+    id: `unsplash-${item.id}`,
+    type: "photo",
+    source: "unsplash",
+    title: item.alt_description || item.description || "Untitled",
+    thumbnail: item.urls?.small || item.urls?.thumb || "",
+    src: item.urls?.full || item.urls?.regular || item.urls?.raw || "",
+    url: item.links?.html || "",
+    dow: item.links?.download_location || null,
+  };
+}
+
+export function normalizeWallhavenPhoto(item) {
+  return {
+    id: `wallhaven-${item.id}`,
+    type: "photo",
+    source: "wallhaven",
+    title: item.id ? `Wallhaven Wallpaper ${item.id}` : "Wallpaper",
+    thumbnail: item.thumbs?.small || item.thumbs?.original || item.path || "",
+    src: item.path || "",
+    url: item.url || "",
+    dow: null,
+  };
+}
+
 export const fetchVideos = async (query,per_page=15) => {
     const res = await axios.get('https://api.pexels.com/videos/search', {
         params: { query, per_page },
