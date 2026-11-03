@@ -62,7 +62,132 @@ const getFileExtension = (blob, url, type) => {
 };
 
 // --------------------------------------------------
-// COMPONENT
+// MEDIA SKELETON
+// --------------------------------------------------
+
+const MediaSkeleton = () => (
+  <div className="absolute inset-0 overflow-hidden bg-gray-800">
+    <div className="absolute inset-0 animate-pulse bg-linear-to-br from-gray-700/70 via-gray-800 to-gray-700/70" />
+
+    <div className="absolute inset-y-0 -left-1/2 w-1/2 animate-[shimmer_1.8s_infinite] bg-linear-to-r from-transparent via-white/6 to-transparent" />
+  </div>
+);
+
+const MediaPreview = ({ item }) => {
+  const [mediaLoaded, setMediaLoaded] = useState(false);
+  const [mediaFailed, setMediaFailed] = useState(false);
+
+  const hasDimensions = Number(item.width) > 0 && Number(item.height) > 0;
+
+  // Reserve the media's space before it loads.
+  const aspectRatio = hasDimensions
+    ? `${item.width} / ${item.height}`
+    : "4 / 3";
+
+  const handleImageLoad = async (event) => {
+    const image = event.currentTarget;
+
+    try {
+      if (image.decode) {
+        await image.decode();
+      }
+    } catch {
+      // The browser may have already decoded the image.
+    }
+
+    setMediaLoaded(true);
+  };
+
+  const handleVideoLoad = () => {
+    setMediaLoaded(true);
+  };
+
+  const handleMediaError = () => {
+    setMediaFailed(true);
+  };
+
+  return (
+    <div
+      className="relative w-full overflow-hidden bg-gray-800"
+      style={{
+        aspectRatio,
+        contain: "layout paint",
+      }}
+    >
+      {/* Loading skeleton */}
+      {!mediaLoaded && !mediaFailed && <MediaSkeleton />}
+
+      {/* Media error fallback */}
+      {mediaFailed && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gray-800 text-center text-xs text-gray-500">
+          <span className="text-lg">⚠</span>
+          <span>
+            {item.type === "video"
+              ? "Video unavailable"
+              : item.type === "gif"
+                ? "GIF unavailable"
+                : "Image unavailable"}
+          </span>
+        </div>
+      )}
+
+      {/* PHOTO */}
+      {item.type === "photo" && (
+        <img
+          src={item.thumbnail}
+          alt={item.title || "Photo"}
+          width={hasDimensions ? item.width : undefined}
+          height={hasDimensions ? item.height : undefined}
+          loading="lazy"
+          decoding="async"
+          onLoad={handleImageLoad}
+          onError={handleMediaError}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+            mediaLoaded ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      )}
+
+      {/* GIF */}
+      {item.type === "gif" && (
+        <img
+          src={item.src}
+          alt={item.title || "GIF"}
+          width={hasDimensions ? item.width : undefined}
+          height={hasDimensions ? item.height : undefined}
+          loading="lazy"
+          decoding="async"
+          onLoad={handleImageLoad}
+          onError={handleMediaError}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+            mediaLoaded ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      )}
+
+      {/* VIDEO */}
+      {item.type === "video" && (
+        <video
+          src={item.src}
+          poster={item.thumbnail || undefined}
+          width={hasDimensions ? item.width : undefined}
+          height={hasDimensions ? item.height : undefined}
+          controls
+          preload="metadata"
+          playsInline
+          onLoadedMetadata={handleVideoLoad}
+          onError={handleMediaError}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+            mediaLoaded ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      )}
+    </div>
+  );
+};
+
+// --------------------------------------------------
+// RESULT CARD
 // --------------------------------------------------
 
 const ResultCard = ({ item }) => {
@@ -82,18 +207,15 @@ const ResultCard = ({ item }) => {
   // --------------------------------------------------
 
   const handleBookmarkClick = () => {
+    dispatch(toggleBookmark(item));
+
+    const mediaName =
+      item.type === "gif" ? "GIF" : item.type === "video" ? "Video" : "Photo";
+
     if (bookmarked) {
-      dispatch(toggleBookmark(item));
-
-      toast.info(
-        `${item.type === "gif" ? "GIF" : "Photo"} removed from your collection!`,
-      );
+      toast.info(`${mediaName} removed from your collection!`);
     } else {
-      dispatch(toggleBookmark(item));
-
-      toast.success(
-        `${item.type === "gif" ? "GIF" : "Photo"} added to your collection!`,
-      );
+      toast.success(`${mediaName} added to your collection!`);
     }
   };
 
@@ -108,8 +230,7 @@ const ResultCard = ({ item }) => {
     setDownloadStatus("Preparing your download...");
 
     try {
-      // Record Unsplash download event.
-      // Tracking failure should not prevent the image download.
+      // Unsplash download tracking
       if (item.source === "unsplash" && item.dow) {
         fetch(item.dow, {
           headers: {
@@ -120,7 +241,7 @@ const ResultCard = ({ item }) => {
         });
       }
 
-      // Highest quality first, then available alternatives.
+      // Highest quality first, followed by fallbacks.
       const candidates = [
         ...(Array.isArray(item.downloadOptions) ? item.downloadOptions : []),
         item.src,
@@ -137,7 +258,7 @@ const ResultCard = ({ item }) => {
       let successfulUrl = null;
       let lastError = null;
 
-      for (let index = 0; index < uniqueCandidates.length; index++) {
+      for (let index = 0; index < uniqueCandidates.length; index += 1) {
         const originalUrl = uniqueCandidates[index];
 
         const downloadUrl = getDownloadUrl(originalUrl, item.source);
@@ -157,18 +278,18 @@ const ResultCard = ({ item }) => {
 
           const blob = await response.blob();
 
-          if (!blob.size) {
-            throw new Error("Downloaded file is empty");
+          if (!blob.size || !blob.type.startsWith("image/")) {
+            throw new Error("The server did not return a valid image");
           }
 
           downloadedBlob = blob;
           successfulUrl = originalUrl;
 
           break;
-        } catch (error) {
-          lastError = error;
+        } catch (downloadError) {
+          lastError = downloadError;
 
-          console.warn(`Download option ${index + 1} failed:`, error);
+          console.warn(`Download option ${index + 1} failed:`, downloadError);
         }
       }
 
@@ -185,7 +306,7 @@ const ResultCard = ({ item }) => {
       );
 
       const safeTitle = (item.title || "visual-wall-media")
-        .replace(/[<>:"/\\|?*\x00-\x1F]/g, "")
+        .replace(/[<>:"/\\|?*]/g, "")
         .trim()
         .replace(/\s+/g, "-")
         .slice(0, 100);
@@ -205,8 +326,8 @@ const ResultCard = ({ item }) => {
         URL.revokeObjectURL(objectUrl);
         setDownloadStatus("");
       }, 1500);
-    } catch (error) {
-      console.error("Download failed:", error);
+    } catch (downloadError) {
+      console.error("Download failed:", downloadError);
 
       setDownloadStatus("Download failed. Please open the original image.");
 
@@ -223,7 +344,7 @@ const ResultCard = ({ item }) => {
   // --------------------------------------------------
 
   return (
-    <div className="group w-full overflow-hidden rounded-lg bg-gray-900 shadow-sm transition hover:shadow-lg">
+    <div className="group w-full overflow-hidden rounded-lg bg-gray-900 shadow-sm transition-shadow duration-300 hover:shadow-lg">
       {/* Media Preview */}
       <div className="relative overflow-hidden">
         <a
@@ -232,38 +353,10 @@ const ResultCard = ({ item }) => {
           rel="noreferrer"
           className="block"
         >
-          {item.type === "photo" && (
-            <img
-              src={item.thumbnail}
-              alt={item.title || "Photo"}
-              width={item.width || undefined}
-              height={item.height || undefined}
-              loading="lazy"
-              decoding="async"
-              className="block h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-            />
-          )}
-
-          {item.type === "video" && (
-            <video
-              src={item.src}
-              poster={item.thumbnail}
-              controls
-              preload="metadata"
-              playsInline
-              className="block h-auto w-full object-cover"
-            />
-          )}
-
-          {item.type === "gif" && (
-            <img
-              src={item.src}
-              alt={item.title || "GIF"}
-              loading="lazy"
-              decoding="async"
-              className="block h-auto w-full object-cover"
-            />
-          )}
+          <MediaPreview
+            key={`${item.type}-${item.id}-${item.src}`}
+            item={item}
+          />
         </a>
 
         {(item.type === "photo" || item.type === "gif") && (
@@ -282,21 +375,21 @@ const ResultCard = ({ item }) => {
                 <DownloadIcon className="h-6 w-6" />
               )}
             </button>
-
-            {/* Bookmark */}
-            <button
-              type="button"
-              aria-label={bookmarked ? "Remove bookmark" : "Bookmark media"}
-              aria-pressed={bookmarked}
-              onClick={handleBookmarkClick}
-              className={`absolute bottom-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full text-white transition-all duration-300 hover:bg-blue-700 group-hover:opacity-100 active:scale-95 ${
-                bookmarked ? "bg-blue-500 opacity-100" : "bg-black/60 opacity-0"
-              }`}
-            >
-              <BookmarkIcon className="h-6 w-6" />
-            </button>
           </>
         )}
+
+        {/* Bookmark */}
+        <button
+          type="button"
+          aria-label={bookmarked ? "Remove bookmark" : "Bookmark media"}
+          aria-pressed={bookmarked}
+          onClick={handleBookmarkClick}
+          className={`absolute bottom-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full text-white transition-all duration-300 hover:bg-blue-700 group-hover:opacity-100 active:scale-95 ${
+            bookmarked ? "bg-blue-500 opacity-100" : "bg-black/60 opacity-0"
+          }`}
+        >
+          <BookmarkIcon className="h-6 w-6" />
+        </button>
       </div>
 
       {/* Media Title */}
