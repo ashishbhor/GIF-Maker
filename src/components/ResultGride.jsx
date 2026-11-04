@@ -23,10 +23,6 @@ import {
 
 import ResultCard from "./ResultCard";
 
-// --------------------------------------------------
-// LOADING MESSAGES
-// --------------------------------------------------
-
 const loadingMessages = [
   "Hold on… pixels are getting dressed. 👀",
   "Downloading good vibes… not your patience.",
@@ -42,10 +38,6 @@ const loadingMessages = [
 
 const BATCH_SIZE = 15;
 
-// --------------------------------------------------
-// RESPONSIVE MASONRY COLUMN COUNT
-// --------------------------------------------------
-
 const getColumnCount = () => {
   if (typeof window === "undefined") return 2;
 
@@ -55,10 +47,6 @@ const getColumnCount = () => {
 
   return 2;
 };
-
-// --------------------------------------------------
-// BALANCED MASONRY DISTRIBUTION
-// --------------------------------------------------
 
 const distributeMedia = (media, columnCount) => {
   const columns = Array.from({ length: columnCount }, () => []);
@@ -88,10 +76,6 @@ const distributeMedia = (media, columnCount) => {
 
   return columns;
 };
-
-// --------------------------------------------------
-// NORMALIZE PEXELS VIDEOS
-// --------------------------------------------------
 
 const normalizeVideo = (item) => {
   const videoFile = (item.video_files || [])
@@ -123,10 +107,6 @@ const normalizeVideo = (item) => {
     dow: videoFile.link,
   };
 };
-
-// --------------------------------------------------
-// NORMALIZE GIPHY GIFs
-// --------------------------------------------------
 
 const normalizeGIF = (item) => {
   const images = item.images || {};
@@ -264,10 +244,11 @@ function ResultGride() {
     nextPhotoSource,
   } = useSelector((store) => store.search);
 
-  // Initial loading message
   const [loadingMessage] = useState(
     () => loadingMessages[Math.floor(Math.random() * loadingMessages.length)],
   );
+
+  const [showTopButton, setShowTopButton] = useState(false);
 
   // Responsive columns
   const [columnCount, setColumnCount] = useState(getColumnCount);
@@ -433,6 +414,23 @@ function ResultGride() {
       cancelled = true;
     };
   }, [query, activeTab, dispatch, prefetchBatch]);
+
+  // Show the Top button after scrolling one screen
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowTopButton(window.scrollY >= window.innerHeight);
+    };
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const loadNextPhotoBatch = useCallback(async () => {
     if (
@@ -738,6 +736,50 @@ function ResultGride() {
             </p>
           )}
       </div>
+
+      {showTopButton && (
+        <button
+          type="button"
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            })
+          }
+          aria-label="Back to top"
+          className="
+      fixed bottom-7 right-7 z-50
+      inline-flex items-center gap-2
+      rounded-full
+      border border-white/20
+      bg-white/15
+      px-5 py-3
+      text-sm font-semibold text-white
+      shadow-[0_8px_30px_rgba(0,0,0,0.3)]
+      backdrop-blur-xl
+      transition-all duration-300
+      hover:scale-105 hover:bg-white/25
+      active:scale-95
+      animate-in fade-in slide-in-from-bottom-3
+    "
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m18 15-6-6-6 6" />
+          </svg>
+          Top
+        </button>
+      )}
     </>
   );
 }

@@ -11,14 +11,24 @@ const HomePage = () => {
   const isIntroduction = !query?.trim();
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#0B101B]">
+    <div
+      className={`w-full bg-[#0B101B] text-white ${
+        isIntroduction
+          ? "h-[calc(100dvh-72px)] overflow-hidden"
+          : "min-h-[calc(100vh-72px)]"
+      }`}
+    >
       <main
-        className="relative min-h-[calc(100vh-72px)]
-      overflow-hidden bg-gray-900 text-white"
+        className={`relative w-full bg-gray-900 ${
+          isIntroduction
+            ? "h-full overflow-hidden"
+            : "min-h-full overflow-visible"
+        }`}
       >
+        {/* Lightfall background - introduction only */}
         {isIntroduction && (
           <div
-            className="pointer-events-none absolute inset-0 z-0"
+            className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
             aria-hidden="true"
           >
             <Lightfall
@@ -28,26 +38,35 @@ const HomePage = () => {
               mouseRadius={0.5}
               bloom={0.3}
               backgroundGlow={0}
+              className="h-full w-full"
             />
           </div>
         )}
 
-        <div className="relative z-10">
-          <div className={`px-4 ${isIntroduction ? "pt-8 sm:pt-12" : "pt-6"}`}>
+        <div
+          className={`relative z-10 ${
+            isIntroduction ? "flex h-full flex-col" : ""
+          }`}
+        >
+          {/* Search */}
+          <div className="shrink-0 px-4 pt-6 sm:pt-8">
             <SearchBar />
           </div>
 
           {isIntroduction ? (
             <>
-              <div
-                className="flex min-h-[65vh] items-center
-              justify-center py-12 sm:py-16"
-              >
+              {/* Hero */}
+              <section className="flex min-h-0 flex-1 items-center justify-center px-4">
                 <HeroText />
+              </section>
+
+              {/* Footer */}
+              <div className="shrink-0 pb-4">
+                <Footer />
               </div>
-              <Footer />
             </>
           ) : (
+            /* Search Results */
             <section className="pt-5">
               <Tabs />
               <ResultGride />

@@ -6,10 +6,6 @@ import { toast } from "react-toastify";
 
 import { toggleBookmark } from "../redux/Features/collectionSlice";
 
-// --------------------------------------------------
-// WALLHAVEN IMAGE PROXY
-// --------------------------------------------------
-
 const getDownloadUrl = (url, source) => {
   if (!url || source !== "wallhaven") return url;
 
@@ -25,10 +21,6 @@ const getDownloadUrl = (url, source) => {
     return url;
   }
 };
-
-// --------------------------------------------------
-// DOWNLOAD FILE EXTENSION
-// --------------------------------------------------
 
 const getFileExtension = (blob, url, type) => {
   if (type === "gif") return "gif";
@@ -60,10 +52,6 @@ const getFileExtension = (blob, url, type) => {
 
   return "jpg";
 };
-
-// --------------------------------------------------
-// MEDIA SKELETON
-// --------------------------------------------------
 
 const MediaSkeleton = () => (
   <div className="absolute inset-0 overflow-hidden bg-gray-800">
@@ -186,10 +174,6 @@ const MediaPreview = ({ item }) => {
   );
 };
 
-// --------------------------------------------------
-// RESULT CARD
-// --------------------------------------------------
-
 const ResultCard = ({ item }) => {
   const dispatch = useDispatch();
 
@@ -201,10 +185,6 @@ const ResultCard = ({ item }) => {
 
   const [downloadStatus, setDownloadStatus] = useState("");
   const [isDownloading, setIsDownloading] = useState(false);
-
-  // --------------------------------------------------
-  // BOOKMARK
-  // --------------------------------------------------
 
   const handleBookmarkClick = () => {
     dispatch(toggleBookmark(item));
@@ -218,10 +198,6 @@ const ResultCard = ({ item }) => {
       toast.success(`${mediaName} added to your collection!`);
     }
   };
-
-  // --------------------------------------------------
-  // DOWNLOAD
-  // --------------------------------------------------
 
   const handleDownload = async () => {
     if (isDownloading) return;
@@ -339,10 +315,6 @@ const ResultCard = ({ item }) => {
     }
   };
 
-  // --------------------------------------------------
-  // RENDER
-  // --------------------------------------------------
-
   return (
     <div className="group w-full overflow-hidden rounded-lg bg-gray-900 shadow-sm transition-shadow duration-300 hover:shadow-lg">
       {/* Media Preview */}
@@ -378,13 +350,14 @@ const ResultCard = ({ item }) => {
           </>
         )}
 
-        {/* Bookmark */}
         <button
           type="button"
           aria-label={bookmarked ? "Remove bookmark" : "Bookmark media"}
           aria-pressed={bookmarked}
           onClick={handleBookmarkClick}
-          className={`absolute bottom-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full text-white transition-all duration-300 hover:bg-blue-700 group-hover:opacity-100 active:scale-95 ${
+          className={`absolute ${
+            item.type === "video" ? "right-3 top-3" : "bottom-3 right-3"
+          } z-20 flex h-10 w-10 items-center justify-center rounded-full text-white transition-all duration-300 hover:bg-blue-700 group-hover:opacity-100 active:scale-95 ${
             bookmarked ? "bg-blue-500 opacity-100" : "bg-black/60 opacity-0"
           }`}
         >
