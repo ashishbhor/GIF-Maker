@@ -1,16 +1,31 @@
-# React + Vite
+# Visual Wall
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Visual Wall is a responsive visual discovery platform that allows users to search, explore, download, and bookmark photos, videos, and GIFs from multiple online media platforms.
 
-Currently, two official plugins are available:
+### Tech Stack
+- **Frontend:** React.js, JavaScript (ES6+), HTML5, CSS3, Tailwind CSS
+- **State Management:** Redux Toolkit, React Redux
+- **API Integration:** Axios, Fetch API, REST APIs
+- **React Concepts:** Functional Components, React Hooks (`useState`, `useEffect`, `useCallback`, `useMemo`, `useRef`), React Router
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### API Integrations
+- **Unsplash API** – Photo search and discovery.
+- **Wallhaven API** – Wallpaper search and discovery.
+- **Pexels API** – Video search and discovery.
+- **Giphy API** – GIF search and discovery.
 
-## React Compiler
+### Key Features
+- Search and explore photos, videos, and GIFs from multiple APIs.
+- Centralized application state management using Redux Toolkit.
+- Redux slices and actions for managing search queries, active tabs, media results, bookmarks, loading states, and pagination.
+- Infinite scrolling with `IntersectionObserver`.
+- Alternating photo batches from Unsplash and Wallhaven.
+- Paginated video and GIF fetching.
+- Balanced responsive masonry grid layout.
+- Bookmark and collection management using Redux and local storage.
+- Media downloading with quality fallbacks.
+- Skeleton loaders, lazy loading, reserved media dimensions, and smooth fade-in effects.
+- Responsive user interface with modern animations and interactive components.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Highlights
+The main focus of this project is implementing **centralized state management with Redux Toolkit** and integrating multiple REST APIs into a unified React application. Redux helps maintain consistent application state across components, while asynchronous API requests, pagination, and infinite scrolling provide a seamless media discovery experience.
