@@ -1,0 +1,17 @@
+
+{
+  "rewrites": [
+    {
+      "source": "/api/wallhaven-api/:path*",
+      "destination": "/api/wallhaven-api/:path*"
+    },
+    {
+      "source": "/api/wallhaven-image/:path*",
+      "destination": "/api/wallhaven-image/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

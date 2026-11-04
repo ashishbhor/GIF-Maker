@@ -5,6 +5,7 @@ import TopText from "./components/TopText";
 import TermsPage from "./pages/TermsPage";
 import AboutPage from "./pages/AboutPage";
 import CreditsPage from "./pages/CreditsPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/credits" element={<CreditsPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
   );

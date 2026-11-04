@@ -1,8 +1,9 @@
 import axios from "axios";
+
+
 const UNSPLASH_KEY = import.meta.env.VITE_UNSPLASH_KEY;
 const PEXELS_KEY = import.meta.env.VITE_PEXELS_KEY;
 const GIPHY_KEY = import.meta.env.VITE_GIPHY_KEY;
-
 
 
 export async function fetchPhotos(query, page = 1, per_page = 15) {
@@ -23,7 +24,7 @@ export async function fetchPhotos(query, page = 1, per_page = 15) {
 
 export async function fetchWallhavenPhotos(query, page = 1) {
     const res = await axios.get(
-        "/wallhaven-api/api/v1/search",
+        "/api/wallhaven-api/api/v1/search",
         {
             params: {
                 q: query,
@@ -36,6 +37,27 @@ export async function fetchWallhavenPhotos(query, page = 1) {
     return res.data;
 }
 
+// Convert Wallhaven full-image URLs to our backend proxy.
+// Other Wallhaven URLs, such as thumbnail hosts, remain unchanged.
+function getWallhavenImageUrl(url) {
+    if (typeof url !== "string" || !url.trim()) {
+        return "";
+    }
+
+    try {
+        const parsedUrl = new URL(url);
+
+        if (parsedUrl.hostname !== "w.wallhaven.cc") {
+            return url;
+        }
+
+        return `/api/wallhaven-image${parsedUrl.pathname}${parsedUrl.search}`;
+    } catch {
+        return url;
+    }
+}
+
+
 
 const uniqueUrls = (urls) => [
     ...new Set(
@@ -44,6 +66,7 @@ const uniqueUrls = (urls) => [
         )
     ),
 ];
+
 
 
 export function normalizeUnsplashPhoto(item) {
@@ -85,7 +108,7 @@ export function normalizeWallhavenPhoto(item) {
         item.thumbs?.original,
         item.thumbs?.large,
         item.thumbs?.small,
-    ]);
+    ]).map(getWallhavenImageUrl);
 
     const width = item.dimension_x || null;
     const height = item.dimension_y || null;
@@ -97,11 +120,12 @@ export function normalizeWallhavenPhoto(item) {
         title: item.id
             ? `Wallhaven Wallpaper ${item.id}`
             : "Wallpaper",
-        thumbnail:
+        thumbnail: getWallhavenImageUrl(
             item.thumbs?.small ||
             item.thumbs?.large ||
             item.path ||
-            "",
+            ""
+        ),
         src: downloadOptions[0] || "",
         downloadOptions,
         width,
@@ -112,7 +136,6 @@ export function normalizeWallhavenPhoto(item) {
         dow: null,
     };
 }
-
 
 
 export const fetchVideos = async (
@@ -136,6 +159,7 @@ export const fetchVideos = async (
 
     return res.data;
 };
+
 
 
 export const fetchGIF = async (

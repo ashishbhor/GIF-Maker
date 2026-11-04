@@ -1,8 +1,8 @@
 {
-"compilerOptions": {
+  "compilerOptions": {
     "paths": {
-    "@/*": ["./src/*"]
+      "@/*": ["./src/*"]
     }
-},
-"include": ["src"]
+  },
+  "include": ["src", "api"]
 }
