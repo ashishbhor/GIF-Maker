@@ -16,11 +16,7 @@ const CollectionPage = () => {
             No saved photos or GIFs yet. Bookmark something to see it here!
           </p>
           <Link to="/">
-            <img
-              src="/public/shopping.png"
-              alt="Cart Empty"
-              className=" w-60 "
-            />
+            <img src="/shopping.png" alt="Cart Empty" className=" w-60 " />
           </Link>
         </div>
       ) : (
