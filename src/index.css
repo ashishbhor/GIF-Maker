@@ -3,8 +3,11 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 
-
 @custom-variant dark (&:is(.dark *));
+
+/* ========================================
+   THEME CONFIGURATION
+======================================== */
 
 @theme inline {
   --font-heading: var(--font-sans);
@@ -54,11 +57,12 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ========================================
-   LIGHT THEME
-======================================== */
+
 
 :root {
+  color-scheme: dark;
+  background-color: #0B101B;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
 
@@ -152,9 +156,7 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-/* ========================================
-   GLOBAL BASE STYLES
-======================================== */
+
 
 @layer base {
   * {
@@ -171,6 +173,7 @@
     min-height: 100vh;
   }
 }
+
 
 
 .screen-art-background {
@@ -225,6 +228,8 @@
     animation: none;
   }
 }
+
+
 html,
 body,
 #root {
@@ -234,6 +239,26 @@ body,
   background-color: #0B101B;
 }
 
+html {
+  overscroll-behavior-x: none;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  touch-action: manipulation;
 }
